@@ -50,7 +50,7 @@ dataset = Planetoid(root='/tmp/Cora', name='Cora')
 dataset_length = len(dataset)
 train_split = int(len(dataset) * 0.8)
 train_dataset = dataset[:train_split]
-train_loader = DataLoader(dataset[train_split], batch_size=64, shuffle=True)
+train_loader = DataLoader(dataset[:train_split], batch_size=64, shuffle=True)
 print('*******************')
 print('dataset:',dataset)
 print("dataset_length",dataset_length)
