@@ -61,26 +61,6 @@ def extract_subgraph(x, edge_index, nodes):
         return x_subgraph, edge_index_subgraph    
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Load the dataset
 dataset = Planetoid(root='/tmp/Cora', name='Cora')
 data = dataset[0]
