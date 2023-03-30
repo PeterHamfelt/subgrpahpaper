@@ -119,7 +119,7 @@ model.eval()
 correct=0
 x, edge_index, y = data.x, data.edge_index, data.y
 subgraph_nodes = [1, 2, 3]
-subgraph_nodes = subgraph.tolist()
+#subgraph_nodes = subgraph.tolist()
 y_subgraph = y[subgraph_nodes]
 x_subgraph, edge_index_subgraph = extract_subgraph(x, edge_index, subgraph_nodes)
 out = model(x_subgraph, edge_index_subgraph)
