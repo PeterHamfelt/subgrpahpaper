@@ -114,14 +114,16 @@ for epoch in range(200):
         print('Epoch {}, Loss {}'.format(epoch, loss))
 
 # Test the model
+# Test the model
 model.eval()
+correct=0
 x, edge_index, y = data.x, data.edge_index, data.y
 subgraph_nodes = [1, 2, 3]
 x_subgraph, edge_index_subgraph = extract_subgraph(x, edge_index, subgraph_nodes)
 out = model(x_subgraph, edge_index_subgraph)
 normal_representation = model(dataset[0].x, dataset[0].edge_index)  # Example of using the first graph in the dataset as normal representation
 anomaly_score = 1 - criterion(out, normal_representation)
-pred = int(anomaly_score > 0.5)  # Threshold the anomaly score to classify the subgraph as anomalous or not
+pred = (anomaly_score > 0.5).int()  # Threshold the anomaly score to classify the subgraph as anomalous or not
 correct = int(pred == y[subgraph_nodes])
 
 accuracy = correct / 1  # As we only have one graph in the dataset
