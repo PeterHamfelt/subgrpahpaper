@@ -46,11 +46,11 @@ class GNN(torch.nn.Module):
 
 # Load the dataset
 dataset = Planetoid(root='/tmp/Cora', name='Cora')
-
+data = dataset[0]
 dataset_length = len(dataset)
 train_split = int(len(dataset) * 0.8)
 train_dataset = dataset[:train_split]
-train_loader = DataLoader(dataset[:train_split], batch_size=64, shuffle=True)
+#train_loader = DataLoader(dataset[:train_split], batch_size=64, shuffle=True)
 print('*******************')
 print('dataset:',dataset)
 print("dataset_length",dataset_length)
@@ -66,12 +66,12 @@ test_split = dataset_length - train_split  # 20% of the dataset for testing
 
 # Replace 800 with train_split
 
-test_dataset = dataset[train_split:]
+#test_dataset = dataset[train_split:]
 
 
 # Split the dataset into training and testing subsets
 
-test_loader = DataLoader(dataset[test_split:], batch_size=64, shuffle=False)
+#test_loader = DataLoader(dataset[test_split:], batch_size=64, shuffle=False)
 
 # Instantiate the GNN model and set the optimizer and loss function
 in_channels = dataset.num_features
