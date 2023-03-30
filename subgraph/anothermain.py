@@ -124,7 +124,8 @@ out = model(x_subgraph, edge_index_subgraph)
 normal_representation = model(dataset[0].x, dataset[0].edge_index)  # Example of using the first graph in the dataset as normal representation
 anomaly_score = 1 - criterion(out, normal_representation)
 pred = (anomaly_score > 0.5).int()  # Threshold the anomaly score to classify the subgraph as anomalous or not
-correct = int(pred == y[subgraph_nodes])
+#correct = int(pred == y[subgraph_nodes])
+correct += (pred == y[subgraph_nodes]).sum().item()
 
 accuracy = correct / 1  # As we only have one graph in the dataset
 print('Accuracy {:.2f}'.format(accuracy))
