@@ -126,6 +126,9 @@ out = model(x_subgraph, edge_index_subgraph)
 normal_representation = model(dataset[0].x, dataset[0].edge_index)  # Example of using the first graph in the dataset as normal representation
 anomaly_score = 1 - criterion(out, normal_representation)
 pred = (anomaly_score > 0.5).int()  # Threshold the anomaly score to classify the subgraph as anomalous or not
+y_subgraph = y[subgraph_nodes]
+y_subgraph_binary = torch.zeros_like(pred)
+y_subgraph_binary[y_subgraph] = 1
 #correct = int(pred == y[subgraph_nodes])
 #correct += (pred == y[subgraph_nodes]).sum().item()
 correct += (pred == y_subgraph).sum().item()
