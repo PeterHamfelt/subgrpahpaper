@@ -131,12 +131,15 @@ y_subgraph = y[subgraph_nodes]
 y_subgraph_binary = torch.zeros_like(pred)
 y_subgraph_binary[y_subgraph] = 1
 """
-num_classes = y_subgraph.unique().size(0)
-y_subgraph_binary = torch.zeros((1, num_classes), dtype=torch.float32)
-y_subgraph_binary[0, y_subgraph] = 1
+num_classes = y_subgraph.max().item() + 1
+y_subgraph_binary = torch.zeros_like(data.y)
+y_subgraph_binary[subgraph_nodes] = 1
+y_subgraph = y_subgraph_binary[subgraph_nodes].bool()
+
 
 #correct = int(pred == y[subgraph_nodes])
 #correct += (pred == y[subgraph_nodes]).sum().item()
+pred = (anomaly_score > 0.5).flatten().bool()  # Flatten pred and y_subgraph
 correct += (pred == y_subgraph).sum().item()
 
 accuracy = correct / 1  # As we only have one graph in the dataset
