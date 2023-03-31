@@ -96,31 +96,16 @@ for epoch in range(200):
 # Test the model
 # Test the model
 model.eval()
-correct=0
-x, edge_index, y = data.x, data.edge_index, data.y
-subgraph_nodes = [1, 2, 3]
-#subgraph_nodes = subgraph.tolist()
-y_subgraph = y[subgraph_nodes]
-x_subgraph, edge_index_subgraph = extract_subgraph(x, edge_index, subgraph_nodes)
-out = model(x_subgraph, edge_index_subgraph)
-normal_representation = model(dataset[0].x, dataset[0].edge_index)  # Example of using the first graph in the dataset as normal representation
-anomaly_score = 1 - criterion(out, normal_representation)
-pred = (anomaly_score > 0.5).int()  # Threshold the anomaly score to classify the subgraph as anomalous or not
-y_subgraph = y[subgraph_nodes]
-"""
-y_subgraph_binary = torch.zeros_like(pred)
-y_subgraph_binary[y_subgraph] = 1
-"""
-num_classes = y_subgraph.max().item() + 1
-y_subgraph_binary = torch.zeros_like(data.y)
-y_subgraph_binary[subgraph_nodes] = 1
-y_subgraph = y_subgraph_binary[subgraph_nodes].bool()
+correct = 0
+for i in range(len(data)):
+    x, edge_index, y = data[i].x, data[i].edge_index, data[i].y
+    subgraph_nodes = [1, 2, 3]  # Example of selecting a subgraph of interest
+    x_subgraph, edge_index_subgraph = extract_subgraph(x, edge_index, subgraph_nodes)
+    out = model(x_subgraph, edge_index_subgraph)
+    normal_representation = model(dataset[0].x, dataset[0].edge_index)  # Example of using the first graph in the dataset as normal representation
+    anomaly_score = 1 - criterion(out, normal_representation)
+    pred = int(anomaly_score > 0.5)  # Threshold the anomaly score to classify the subgraph as anomalous or not
+    correct += int(pred == y[subgraph_nodes])
 
-
-#correct = int(pred == y[subgraph_nodes])
-#correct += (pred == y[subgraph_nodes]).sum().item()
-pred = (anomaly_score > 0.5).flatten().bool()  # Flatten pred and y_subgraph
-correct += (pred == y_subgraph).sum().item()
-
-accuracy = correct / 1  # As we only have one graph in the dataset
+accuracy = correct / len(data)
 print('Accuracy {:.2f}'.format(accuracy))

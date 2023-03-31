@@ -74,7 +74,7 @@ for epoch in range(200):
 
     optimizer.step()
     if epoch % 10 == 0:
-        print('Epoch {}, Loss {}'.format(epoch, loss
+        print('Epoch {}, Loss {}'.format(epoch, loss))
 # Test the model
 model.eval()
 correct = 0
