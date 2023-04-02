@@ -9,7 +9,7 @@ if __name__ == '__main__':
     X = data.data
 
     # Run the k-means algorithm with K=3
-    kmeans = KMeans(n_clusters=3, random_state=0)
+    kmeans = KMeans(n_clusters=3, init='random', random_state=0)
     kmeans.fit(X)
 
     # Calculate the sum of squared errors (SSE)

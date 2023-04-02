@@ -6,7 +6,7 @@ import numpy as np
 X, y = load_wine(return_X_y=True)
 
 # Create a KMeans object with K=3 clusters
-kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans = KMeans(n_clusters=3, init='random')
 
 # Fit the KMeans model to the data
 kmeans.fit(X)
