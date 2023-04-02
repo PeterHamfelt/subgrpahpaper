@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.datasets import load_iris, load_wine, load_glass
+from sklearn.datasets import load_iris, load_wine
 from sklearn.metrics import pairwise_distances
 
 def kmeans_sse(X, K, N):
@@ -35,17 +35,16 @@ def kmeans_sse(X, K, N):
         labels = new_labels
 
         # Delete N/K nearest neighbors of the centroids
+        # Delete N/K nearest neighbors of the centroids
+        # Delete N/K nearest neighbors of the centroids
+        # Delete N/K nearest neighbors of the centroids
         for k in range(K):
             nn = np.argsort(np.sum((X - centroids[k])**2, axis=1))[:int(N/K)]
             X = np.delete(X, nn, axis=0)
 
             # Update the centroids as the means of the remaining instances
-            centroids[k] = np.mean(X[labels == k], axis=0)
-
-            # Update the labels array
-            mask = np.ones(labels.shape, dtype=bool)
-            mask[nn] = False
-            labels = labels[mask]
+            mask = labels == k
+            centroids[k] = np.mean(X[mask], axis=0)
 
         
         
