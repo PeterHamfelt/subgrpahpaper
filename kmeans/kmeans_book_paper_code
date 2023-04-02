@@ -1,0 +1,72 @@
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.datasets import load_iris, load_wine, load_glass
+from sklearn.metrics import pairwise_distances
+
+def kmeans_sse(X, K, N):
+    # X is the dataset of instances (N x d)
+    # K is the number of clusters
+    # N is the number of instances to select at each iteration
+
+    # Compute the initial centroids using K-means++ initialization
+    kmeans_init = KMeans(n_clusters=K, init='k-means++')
+    kmeans_init.fit(X)
+    centroids = kmeans_init.cluster_centers_
+
+    # Initialize the labels and SSE
+    labels = np.zeros(X.shape[0])
+    sse = np.inf
+
+    # Repeat until convergence
+    while True:
+        # Assign each instance to the nearest centroid
+        distances = pairwise_distances(X, centroids)
+        new_labels = np.argmin(distances, axis=1)
+
+        # Update the centroids as the means of the assigned instances
+        for k in range(K):
+            centroids[k] = np.mean(X[new_labels == k], axis=0)
+
+        # Compute the SSE and check for convergence
+        new_sse = np.sum((X - centroids[new_labels])**2)
+        if np.abs(new_sse - sse) < 1e-6:
+            break
+        sse = new_sse
+        labels = new_labels
+
+        # Delete N/K nearest neighbors of the centroids
+        for k in range(K):
+            nn = np.argsort(np.sum((X - centroids[k])**2, axis=1))[:int(N/K)]
+            X = np.delete(X, nn, axis=0)
+
+            # Update the centroids as the means of the remaining instances
+            centroids[k] = np.mean(X[labels == k], axis=0)
+
+    return sse
+
+
+
+# Load the Iris dataset
+iris = load_iris()
+X_iris = iris.data
+
+# Compute the SSE of K-means clustering on Iris dataset using K=3 and N=20
+sse_iris = kmeans_sse(X_iris, K=3, N=20)
+
+# Load the Wine dataset
+wine = load_wine()
+X_wine = wine.data
+
+# Compute the SSE of K-means clustering on Wine dataset using K=3 and N=20
+sse_wine = kmeans_sse(X_wine, K=3, N=20)
+
+# Load the Glass dataset
+glass = load_glass()
+X_glass = glass.data
+
+# Compute the SSE of K-means clustering on Glass dataset using K=6 and N=20
+sse_glass = kmeans_sse(X_glass, K=6, N=20)
+
+print("SSE of K-means clustering on Iris dataset: {:.2f}".format(sse_iris))
+print("SSE of K-means clustering on Wine dataset: {:.2f}".format(sse_wine))
+print("SSE of K-means clustering on Glass dataset: {:.2f}".format(sse_glass))
