@@ -42,6 +42,18 @@ def kmeans_sse(X, K, N):
             # Update the centroids as the means of the remaining instances
             centroids[k] = np.mean(X[labels == k], axis=0)
 
+            # Update the labels array
+            mask = np.ones(labels.shape, dtype=bool)
+            mask[nn] = False
+            labels = labels[mask]
+
+        
+        
+        
+        
+        
+        
+
     return sse
 
 
