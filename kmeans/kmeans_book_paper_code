@@ -61,6 +61,32 @@ X_wine = wine.data
 sse_wine = kmeans_sse(X_wine, K=3, N=20)
 
 # Load the Glass dataset
+import numpy as np
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.metrics import pairwise_distances
+
+# Load the Glass dataset from a CSV file
+df_glass = pd.read_csv('glass.csv')
+
+# Extract the features and labels from the dataset
+X_glass = df_glass.iloc[:, :-1].values
+y_glass = df_glass.iloc[:, -1].values
+
+# Compute the SSE of K-means clustering on Glass dataset using K=6 and N=20
+sse_glass = kmeans_sse(X_glass, K=6, N=20)
+
+print("SSE of K-means clustering on Glass dataset: {:.2f}".format(sse_glass))
+
+
+
+
+
+
+
+
+
+
 glass = load_glass()
 X_glass = glass.data
 
