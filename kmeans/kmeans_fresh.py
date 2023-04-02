@@ -1,71 +1,92 @@
+"""
+This is the complete implementation of the k-means++ algorithm for initializing the centroids of k-means clustering.
+
+import numpy as np: Importing the NumPy library for array manipulation and mathematical operations.
+
+def kmeans_plus_plus(X, K, N): Defining a function kmeans_plus_plus that takes in three arguments - the dataset X, the number of clusters K, and the number of points to remove for each iteration N.
+
+centroids = []: Creating an empty list to store the centroids.
+
+for k in range(K):: Looping over K clusters.
+
+if k == 0:: For the first iteration, we need to select a random data point as the first centroid.
+
+feature_means = np.mean(X, axis=0): Calculating the feature means of the dataset X.
+
+distances = np.sqrt(np.sum((X - feature_means)**2, axis=1)): Calculating the distances of each data point in X from the feature means.
+
+closest_index = np.argmin(distances): Finding the index of the data point that is closest to the feature means.
+
+centroids.append(X[closest_index]): Adding the closest data point to the centroids list.
+
+else:: For subsequent iterations, we need to remove the N/K nearest neighbors of the previous centroid before selecting the next centroid.
+
+dist_to_centroid = np.sqrt(np.sum((X - centroids[k-1])**2, axis=1)): Calculating the distances of each data point in X from the previous centroid.
+
+sorted_indices = np.argsort(dist_to_centroid): Sorting the distances in ascending order and returning the indices.
+
+delete_indices = sorted_indices[:N//K]: Selecting the first N/K indices from the sorted indices to delete from the dataset.
+
+X = np.delete(X, delete_indices, axis=0): Deleting the N/K nearest neighbors from the dataset X.
+
+feature_means = np.mean(X, axis=0): Calculating the feature means of the updated dataset X.
+
+distances = np.sqrt(np.sum((X - feature_means)**2, axis=1)): Calculating the distances of each data point in X from the feature means.
+
+closest_index = np.argmin(distances): Finding the index of the data point that is closest to the feature means.
+
+centroids.append(X[closest_index]): Adding the closest data point to the centroids list.
+
+return np.array(centroids): Returning the final set of centroids as a NumPy array.
+
+"""
+
 import numpy as np
 
-
-def kmeans(X, K, N):
-    # Step 1: Compute the feature means of the dataset X
-    means = np.mean(X, axis=0)
-
-    # Step 2-4: Initialize the centroids using KMS
-    centroids = np.zeros((K, X.shape[1]))
+def kmeans_plus_plus(X, K, N):
+    centroids = []
     for k in range(K):
         if k == 0:
-            # Choose the first centroid randomly
-            idx = np.random.choice(X.shape[0])
-            centroids[k] = X[idx]
+            feature_means = np.mean(X, axis=0)
+            distances = np.sqrt(np.sum((X - feature_means)**2, axis=1))
+            closest_index = np.argmin(distances)
+            centroids.append(X[closest_index])
         else:
-            # Choose the next centroid using KMS
-            dist = np.sum((X - centroids[k-1])**2, axis=1)
-            probs = dist / np.sum(dist)
-            idx = np.random.choice(X.shape[0], p=probs)
-            centroids[k] = X[idx]
-            # Delete N/K nearest neighbors of the chosen instance
-            dist = np.sum((X - centroids[k])**2, axis=1)
-            nn = np.argsort(dist)[:int(N/K)]
-            X = np.delete(X, nn, axis=0)
-            dist = np.delete(dist, nn)
+            dist_to_centroid = np.sqrt(np.sum((X - centroids[k-1])**2, axis=1))
+            sorted_indices = np.argsort(dist_to_centroid)
+            delete_indices = sorted_indices[:N//K]
+            X = np.delete(X, delete_indices, axis=0)
+            feature_means = np.mean(X, axis=0)
+            distances = np.sqrt(np.sum((X - feature_means)**2, axis=1))
+            closest_index = np.argmin(distances)
+            centroids.append(X[closest_index])
+    return np.array(centroids)
 
-            # Update N
-            N -= int(N/K)
+from sklearn.datasets import load_iris
+from sklearn.cluster import KMeans
 
-    # Initialize the labels and SSE
-    labels = np.zeros(X.shape[0], dtype=int)
-    sse = np.inf
+# Load the iris dataset
+iris = load_iris()
+X = iris.data
 
-    # Run the k-means algorithm until convergence
-    while True:
-        # Assign each instance to the closest centroid
-        for i in range(X.shape[0]):
-            dist = np.sum((X[i] - centroids)**2, axis=1)
-            labels[i] = np.argmin(dist)
+# Set the parameters for kmeans_plus_plus
+K = 3
+N = len(X)
 
-        # Update the centroids as the means of the instances with the same label
-        for k in range(K):
-            mask = labels == k
-            centroids[k] = np.mean(X[mask], axis=0)
+# Obtain the initial centroids using kmeans_plus_plus
+centroids = kmeans_plus_plus(X, K, N)
 
-        # Compute the sum of squared errors
-        sse_new = 0
-        for k in range(K):
-            mask = labels == k
-            sse_new += np.sum((X[mask] - centroids[k])**2)
+# Fit KMeans with the initial centroids obtained from kmeans_plus_plus
+kmeans = KMeans(n_clusters=K, init=centroids, n_init=1)
+kmeans.fit(X)
 
-        # Check for convergence
-        if np.abs(sse_new - sse) < 1e-6:
-            break
-        else:
-            sse = sse_new
+# Compute the SSE (Sum of Squared Errors) for the KMeans solution
+sse = kmeans.inertia_
+print("SSE: ", sse)
 
-    return labels, sse
+  
 
+# Print the sum of squared errors and the labels
+print(f"SSE: {sse:.2f}")
+#print(f"Labels: {labels}")
 
-if __name__ == '__main__':
-    # Generate a random dataset with 100 instances and 2 features
-    np.random.seed(0)
-    X = np.random.randn(100, 2)
-
-    # Cluster the dataset using K-Means Sampling (KMS) with K=3 and N=20
-    labels, sse = kmeans(X, K=3, N=20)
-
-    # Print the sum of squared errors and the labels
-    print(f"SSE: {sse:.2f}")
-    print(f"Labels: {labels}")
