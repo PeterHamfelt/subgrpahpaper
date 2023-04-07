@@ -34,3 +34,7 @@ kmeans.fit(X)
 sse = kmeans.inertia_
 
 print("SSE:", sse)
+
+
+azure data factory
+data bricks
