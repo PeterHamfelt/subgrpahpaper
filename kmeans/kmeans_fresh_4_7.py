@@ -76,7 +76,7 @@ plt.show()
 from sklearn.cluster import KMeans
 
 # Run K-means multiple times and store the SSE values
-n_runs = 5
+n_runs =10
 sse_values = []
 
 for i in range(n_runs):

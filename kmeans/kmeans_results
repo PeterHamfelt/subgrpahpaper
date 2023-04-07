@@ -1,0 +1,80 @@
+Run 1: SSE = 566.8596
+Run 2: SSE = 566.8596
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> ^C
+PS D:\papers\subgraph_code> & C:/Users/victo/AppData/Local/Programs/Python/Python311/python.exe d:/papers/subgraph_code/kmeans/kmeans_fresh_4_7.py
+Run 1: SSE = 566.8596
+Run 3: SSE = 566.8596
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> & C:/Users/victo/AppData/Local/Programs/Python/Python311/python.exe d:/papers/subgraph_code/kmeans/kmeans_fresh_4_7.py
+Run 1: SSE = 566.8596
+Run 3: SSE = 5696.2561
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> & C:/Users/victo/AppData/Local/Programs/Python/Python311/python.exe d:/papers/subgraph_code/kmeans/kmeans_fresh_4_7.py
+Run 1: SSE = 566.8596
+Run 2: SSE = 5702.1859
+Run 3: SSE = 5693.4793
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+Run 6: SSE = 566.8596
+Run 7: SSE = 566.8596
+Run 8: SSE = 566.8596
+Run 9: SSE = 566.8596
+Run 10: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> 
+Run 1: SSE = 566.8596
+Run 2: SSE = 566.8596
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> ^C
+PS D:\papers\subgraph_code> & C:/Users/victo/AppData/Local/Programs/Python/Python311/python.exe d:/papers/subgraph_code/kmeans/kmeans_fresh_4_7.py
+Run 1: SSE = 566.8596
+Run 3: SSE = 566.8596
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> & C:/Users/victo/AppData/Local/Programs/Python/Python311/python.exe d:/papers/subgraph_code/kmeans/kmeans_fresh_4_7.py
+Run 1: SSE = 566.8596
+Run 3: SSE = 5696.2561
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> & C:/Users/victo/AppData/Local/Programs/Python/Python311/python.exe d:/papers/subgraph_code/kmeans/kmeans_fresh_4_7.py
+Run 1: SSE = 566.8596
+Run 2: SSE = 5702.1859
+Run 3: SSE = 5693.4793
+Run 4: SSE = 566.8596
+Run 5: SSE = 566.8596
+Run 6: SSE = 566.8596
+Run 7: SSE = 566.8596
+Run 8: SSE = 566.8596
+Run 9: SSE = 566.8596
+Run 10: SSE = 566.8596
+
+The SSE values differ across the runs.
+PS D:\papers\subgraph_code> 
+Run 1: SSE = 566.8596
+Run 2: SSE = 566.8596
+Run 3: SSE = 566.8596
+Run 4: SSE = 566.8596
+Run 5: SSE = 5693.4793
+Run 6: SSE = 566.8596
+Run 7: SSE = 566.8596
+Run 8: SSE = 566.8596
+Run 9: SSE = 566.8596
+Run 10: SSE = 5696.5068
