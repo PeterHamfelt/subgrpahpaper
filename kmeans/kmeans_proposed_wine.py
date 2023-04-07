@@ -24,17 +24,45 @@ def kmeans_plus_plus(X, K, N):
 # Load wine dataset
 data = load_wine()
 X = data.data
-
+n_clusters=3
 # Compute centroids using kmeans++
 centroids = kmeans_plus_plus(X, K=3, N=len(X))
-
+"""
 # Compute SSE using sklearn's KMeans
 kmeans = KMeans(n_clusters=3, init=centroids, max_iter=300)
 kmeans.fit(X)
 sse = kmeans.inertia_
 
 print("SSE:", sse)
+"""
+n_runs =10
+sse_values = []
+
+for i in range(n_runs):
+    kmeans = KMeans(n_clusters=n_clusters, init=centroids, n_init=1)
+    kmeans.fit(X)
+    sse = kmeans.inertia_
+    sse_values.append(sse)
+    print(f"Run {i+1}: SSE = {sse:.4f}")
+
+# Check if there are differences in SSE values
+if len(set(sse_values)) > 1:
+    print("\nThe SSE values differ across the runs for proposed kmeans.")
+else:
+    print("\nThe SSE values are the same across the runs for proposed kmeans.")
 
 
-azure data factory
-data bricks
+#azure data factory
+#data bricks
+for i in range(n_runs):
+    kmeans = KMeans(n_clusters=n_clusters, init='random', n_init=1)
+    kmeans.fit(X)
+    sse = kmeans.inertia_
+    sse_values.append(sse)
+    print(f"Run {i+1}: SSE = {sse:.4f}")
+
+# Check if there are differences in SSE values
+if len(set(sse_values)) > 1:
+    print("\nThe SSE values differ across the runs for original_kmeans.")
+else:
+    print("\nThe SSE values are the same across the runs for original_kmeans.")
