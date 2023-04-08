@@ -1,3 +1,4 @@
+"""
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.cluster import KMeans
@@ -17,3 +18,8 @@ if __name__ == '__main__':
 
     # Print the sum of squared errors (SSE)
     print(f"SSE: {sse:.2f}")
+    """
+
+
+
+
