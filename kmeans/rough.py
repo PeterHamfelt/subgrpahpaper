@@ -319,48 +319,49 @@ def run_clustering(normalized_embeddings, centroids, true_labels, n_clusters=7):
 
 
 
-def calculate_percentage_differences(mean_results):
-    percentage_differences = {}
+p1=pd.DataFrame()
+for i in range(10):
+    #columns = ['proposed_sse', 'original_sse', 'proposed_silhouette', 'original_silhouette', 'proposed_ari', 'original_ari', 'proposed_ch_score', 'original_ch_score', 'proposed_db_score', 'original_db_score', 'proposed_mi_score', 'original_mi_score', 'proposed_sse_percentage_difference', 'proposed_silhouette_percentage_difference', 'proposed_ari_percentage_difference', 'proposed_ch_score_percentage_difference', 'proposed_db_score_percentage_difference', 'proposed_mi_score_percentage_difference']
+    #def run_clustering(embeddings, centroids, true_labels, n_clusters=7):
+        # ... (same as before) ...
+    #final_table = pd.DataFrame(columns=columns)
+    n_runs = 10
+    results_list = []
 
-    for key in mean_results.keys():
-        if 'original' in key:
-            proposed_key = key.replace('original', 'proposed')
-            percentage_difference = ((mean_results[proposed_key] - mean_results[key]) / mean_results[key]) * 100
-            percentage_differences[key.replace('original', '') + '_percentage_difference'] = percentage_difference
+    for i in range(n_runs):
+        centroids = d2_weighted_kmeans_plus_plus(normalized_embeddings, K=7)
+        result = run_clustering(normalized_embeddings, centroids, data.y)
+        results_list.append(result)
 
-    return percentage_differences
-
-
-
-
-# Initialize the final_table DataFrame
-#final_table = pd.DataFrame(columns=columns)
-#final_table = pd.DataFrame(columns=results_df.columns)
-
-
-#def run_clustering(embeddings, centroids, true_labels, n_clusters=7):
-    # ... (same as before) ...
-n_runs = 10
-results_list = []
-columns = None
-final_table = None
-columns = ['proposed_sse', 'original_sse', 'proposed_silhouette', 'original_silhouette', 'proposed_ari', 'original_ari', 'proposed_ch_score', 'original_ch_score', 'proposed_db_score', 'original_db_score', 'proposed_mi_score', 'original_mi_score', 'proposed_sse_percentage_difference', 'proposed_silhouette_percentage_difference', 'proposed_ari_percentage_difference', 'proposed_ch_score_percentage_difference', 'proposed_db_score_percentage_difference', 'proposed_mi_score_percentage_difference']
-for i in range(n_runs):
-    centroids = d2_weighted_kmeans_plus_plus(embeddings, K=7)
-    result = run_clustering(normalized_embeddings, centroids, data.y)
-    results_list.append(result)
-
+    # Convert the results_list to a pandas DataFrame and print the table
     results_df = pd.DataFrame(results_list)
+    #print(results_df)
     mean_results = results_df.mean()
-    # Initialize the final_table DataFrame
-    #columns = list(results_df.columns) + [col.replace('original', '') + '_percentage_difference' for col in results_df.columns if 'original' in col]
+    #print(mean_results.index)
+    #print((mean_results))
+    percent_diff_sse=((mean_results['proposed_sse']-mean_results['original_sse'])/mean_results['original_sse'])*100
+    percent_diff_silhouette=((mean_results['proposed_silhouette']-mean_results['original_silhouette'])/mean_results['original_silhouette'])*100
+    percent_diff_ari=((mean_results['proposed_ari']-mean_results['original_ari'])/mean_results['original_ari'])*100
+    percent_diff_ch_score=((mean_results['proposed_ch_score']-mean_results['original_ch_score'])/mean_results['original_ch_score'])*100
+    percent_diff_db_score=((mean_results['proposed_db_score']-mean_results['original_db_score'])/mean_results['original_db_score'])*100
+    percent_diff_mi_score=((mean_results['proposed_mi_score']-mean_results['original_mi_score'])/mean_results['original_mi_score'])*100
 
-    # Get the columns for the final_table
-    if i == 0:
-        columns = list(results_df.columns) + [col.replace('original', '') + '_percentage_difference' for col in results_df.columns if 'original' in col]
-        final_table = pd.DataFrame(columns=columns)
+    dict={'sse':[],'silohette':[],'ari':[],'ch_score':[],'db_score':[],'mi_score':[]}
+    #dict={'sse':percent_diff_sse,'silohette':percent_diff_silhouette,'ari':percent_diff_ari,'ch_score':percent_diff_ch_score,'db_score':percent_diff_db_score,'mi_score':percent_diff_mi_score}
+    dict['sse'].append(percent_diff_sse)
 
-    # Add mean_results and percentage differences to the final_table
+    dict['silohette'].append(percent_diff_silhouette)
+    dict['ari'].append(percent_diff_ari)
+    dict['ch_score'].append(percent_diff_ch_score)
+    dict['db_score'].append(percent_diff_db_score)
+    dict['mi_score'].append(percent_diff_mi_score)
+
+    #print(dict)
+    p2=pd.DataFrame(dict)
+    p1=p1.append (p2)
+
+print(p1)
+"""
     percentage_differences = {}
     for key in mean_results.keys():
         if 'original' in key:
@@ -369,6 +370,11 @@ for i in range(n_runs):
             percentage_differences[key.replace('original', '')] = percentage_difference
 
     final_table.loc[i] = {**mean_results, **percentage_differences}
-
 print(final_table)
+"""
+
+
+
+
+
 
