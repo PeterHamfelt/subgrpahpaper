@@ -7,11 +7,8 @@ from sklearn.metrics import silhouette_score
 from sklearn.metrics import adjusted_rand_score
 from sklearn.metrics import calinski_harabasz_score, davies_bouldin_score
 from sklearn.metrics import adjusted_mutual_info_score
-#from scipy.sparse import coo_matrix
-from mpl_toolkits.mplot3d.art3d import Line3DCollection
-import matplotlib.pyplot as plt
+from scipy.sparse import coo_matrix
 import torch_geometric.transforms as T
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
@@ -157,8 +154,7 @@ threshold_high_density = avg_density * (1 - 0.15)
 attribute_anomaly_scores = []
 # Calculate accuracy
 # We consider the class with the majority of nodes in a cluster to be the label of that cluster
-# For the anomalies (class 0), we reverse the labels, 
-# since we consider the neural network class to be normal
+# For the anomalies (class 0), we reverse the labels, since we consider the neural network class to be normal
 cluster_labels = []
 for subgraph in subgraphs:
     if nx.is_connected(subgraph):
@@ -175,8 +171,8 @@ accuracy = sum(pred_labels == (labels == 3).numpy()) / len(labels)
 
 print("Accuracy:", accuracy)
 # Plot node embeddings
-
-#from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -193,26 +189,15 @@ plt.show()
 # Plot subgraphs
 # Plot subgraphs
 # Plot subgraphs
-
 for i, subgraph in enumerate(subgraphs):
     nodes = list(subgraph.nodes())
     subgraph_colors = ['b' if labels[node] == 1 else 'r' for node in nodes]
     pos = nx.spring_layout(subgraph, seed=42)
-    #nx.draw_networkx(subgraph, pos=pos, node_color=subgraph_colors, with_labels=False)
-    edges = subgraph.edges()
-    edge_list = [(pos[u], pos[v]) for u, v in edges]
-    colors = [subgraph[u][v]['weight'] for u, v in edges]
-    lines = Line3DCollection(edge_list, lw=0.5)
-    lines.set_array(colors)
-    sorted_lines = sorted(lines, key=key_func)
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    ax.add_collection(sorted_lines)
-    ax.autoscale()
-    plt.savefig(f"subgraph_{i}.png")
-    plt.show()
+    nx.draw_networkx(subgraph, pos=pos, node_color=subgraph_colors, with_labels=False)
+    #plt.savefig(f"subgraph_{i}.png")
     plt.clf()
 
-    
 
+
+    
 
