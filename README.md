@@ -802,4 +802,5 @@ Yes, there are several novel aspects to this code.
 First, it uses graph convolutional neural networks (GCNs) to learn node embeddings on the Cora dataset. This is a popular benchmark dataset in the field of graph representation learning.
 Second, it proposes a modification to the k-means clustering algorithm called D2-weighted k-means++, which is used to cluster the learned node embeddings. This modification takes into account the distances to the closest existing centroid when selecting the next centroid, and has been shown to outperform the original k-means algorithm in some cases.
 Third, it uses a combination of attribute-based and graph structure-based anomaly detection methods to identify anomalous clusters in the graph. This is a useful approach for identifying subgraphs that deviate from the norm in terms of their structural and attribute properties.
+_____________________________________________________________________________________________________________________________
 
