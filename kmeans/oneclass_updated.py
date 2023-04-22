@@ -119,7 +119,7 @@ for c in range(n_clusters):
     subgraph = G.subgraph(nodes)
     subgraphs.append(subgraph)
 
-import networkx as nx
+
 
 # ... (code to generate or load your graph G, and divide it into subgraphs)
 
