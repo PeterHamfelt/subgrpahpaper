@@ -1,0 +1,2 @@
+onclass_updated.py  kmeans++ with one class
+oneclass_updated_original_kmeans ==  with originak kmeans for comparison
