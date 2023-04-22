@@ -80,7 +80,7 @@ def run_clustering(normalized_embeddings, centroids, true_labels, n_clusters=7):
     results = {}
     
     # Run proposed K-means
-    proposed_kmeans = KMeans(n_clusters=n_clusters, init=centroids, n_init=1).fit(normalized_embeddings)
+    proposed_kmeans = KMeans(n_clusters=n_clusters, init='random', n_init=1).fit(normalized_embeddings)
     proposed_sse = proposed_kmeans.inertia_
     proposed_sil_score = silhouette_score(normalized_embeddings.numpy(), proposed_kmeans.labels_)
     proposed_ari = adjusted_rand_score(true_labels.numpy(), proposed_kmeans.labels_)
@@ -109,7 +109,7 @@ G = nx.from_edgelist(data.edge_index.t().numpy())
 for i in range(data.x.shape[0]):
     G.nodes[i]['feature'] = data.x[i].numpy()
 # Compute clustering on the embeddings
-kmeans = KMeans(n_clusters=n_clusters, init=random, n_init=1).fit(normalized_embeddings)
+kmeans = KMeans(n_clusters=n_clusters, init='random', n_init=1).fit(normalized_embeddings)
 clusters = kmeans.labels_
 
 # Extract subgraphs for each cluster
