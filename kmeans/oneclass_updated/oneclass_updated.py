@@ -35,7 +35,8 @@ dataset = Planetoid(root='/workspaces/subgraphpaper/data/Cora/', name='Cora')
 data = dataset[0]
 
 # Replace all labels other than 3 with 1
-labels = torch.where(data.y == 3, data.y, torch.ones_like(data.y))
+#labels = torch.where(data.y == 3, data.y, torch.ones_like(data.y))
+labels = torch.where(data.y == 3, torch.zeros_like(data.y), torch.ones_like(data.y))
 
 
 def kmeans_plus_plus(X, K, N):
@@ -79,16 +80,79 @@ class GCN(torch.nn.Module):
 
 
 
+# Training and validation indices
+train_indices = torch.where(data.train_mask)[0]
+val_indices = torch.where(data.val_mask)[0]
 
-
-
-
-
-
-
-num_classes = 2 # 0 indicates anomalies, 1 indicates normal
-
+# Instantiate the GCN model
+num_classes = 2
 model = GCN(data.num_features, 16, num_classes)
+
+# Loss function and optimizer
+loss_function = torch.nn.NLLLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+# Training the model
+n_epochs = 200
+model.train()
+for epoch in range(n_epochs):
+    optimizer.zero_grad()
+    out = model(data.x, data.edge_index)
+    loss = loss_function(out[train_indices], labels[train_indices])
+    loss.backward()
+    optimizer.step()
+    
+    # Calculate the validation loss
+    if epoch % 10 == 0:
+        model.eval()
+        with torch.no_grad():
+            val_out = model(data.x, data.edge_index)
+            val_loss = loss_function(val_out[val_indices], labels[val_indices])
+        print(f"Epoch: {epoch}, Loss: {loss.item()}, Validation Loss: {val_loss.item()}")
+        model.train()
+
+# ... (continue with the rest of the code)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Get node embeddings from the trained model
 with torch.no_grad():
