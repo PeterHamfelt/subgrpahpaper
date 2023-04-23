@@ -21,10 +21,17 @@ def subgraph_representation(G, X, Y, k=10, idx_map=None):
     V, E = G
     n_nodes = len(V)
     n_edges = len(E)
-    
+
+    # Check that all nodes in V are present in X
+    if not np.isin(list(V), X[:, 0]).all():
+        raise ValueError("Node set V is not present in X")
+
     # Create a mapping between the subgraph's node indices and indices in A and D matrices
     if idx_map is None:
         idx_map = dict(zip(V, range(n_nodes)))
+
+    # Create a new X matrix containing only the rows corresponding to the nodes in the subgraph
+    X_subgraph = np.array([X[np.where(X[:, 0] == n)[0][0]] for n in V])
 
     A = np.zeros((n_nodes, n_nodes))
     D = np.zeros((n_nodes, n_nodes))
@@ -36,14 +43,14 @@ def subgraph_representation(G, X, Y, k=10, idx_map=None):
         D[i, i] += 1
         D[j, j] += 1
 
-    W1 = np.ones((X.shape[1], X.shape[1]))
+    W1 = np.ones((X_subgraph.shape[1], X_subgraph.shape[1]))
     W2 = np.ones((Y.shape[1], Y.shape[1]))
 
     for _ in range(k):
         a1 = []
         for i in range(n_nodes):
             neighbors = np.where(A[i] == 1)[0]
-            AXW1 = X[neighbors] * A[i, neighbors][:, np.newaxis] @ W1
+            AXW1 = X_subgraph[neighbors] @ W1
             a1_i = np.exp(AXW1) / np.sum(np.exp(AXW1), axis=0)
             a1.append(a1_i)
         a1 = np.vstack(a1)
@@ -52,7 +59,7 @@ def subgraph_representation(G, X, Y, k=10, idx_map=None):
         for i, j in E:
             # Use the mapping to index into X and Y matrices
             i, j = idx_map.get(i, i), idx_map.get(j, j)
-            a2_ij = np.exp(np.dot(X[i], X[j])) * np.exp(np.dot(Y[(i, j)], W2))
+            a2_ij = np.exp(np.dot(X_subgraph[i], X_subgraph[j])) * np.exp(np.dot(Y[(i, j)], W2))
             a2_ij /= np.sum(a2_ij)
             a2.append(a2_ij)
         a2 = np.vstack(a2)
@@ -60,11 +67,19 @@ def subgraph_representation(G, X, Y, k=10, idx_map=None):
         W1 += np.sum(a1, axis=0) / n_nodes
         W2 += np.sum(a2, axis=0) / n_edges
 
-    Z1 = np.sum(a1 * X, axis=0) / np.sum(a1)
+    Z1 = np.sum(a1 * X_subgraph, axis=0) / np.sum(a1)
     Z2 = np.sum(a2[:, np.newaxis] * np.array([Y[(i, j)] for i, j in E]), axis=0) / np.sum(a2)
     Z = np.hstack((Z1, Z2))
 
     return Z
+
+
+# Calculate subgraph representations
+#subgraph_representations = []
+# Add this line before the loop for extracting subgraphs
+
+
+
 
 
 
@@ -160,25 +175,25 @@ for i, j in G.edges():
 # Calculate subgraph representations
 # Calculate subgraph representations
 # Calculate subgraph representations
+# Calculate subgraph representations
+# Calculate subgraph representations
+# Calculate subgraph representations
 subgraph_representations = []
-# Add this line before the loop for extracting subgraphs
 inv_idx_map = {idx: i for i, idx in enumerate(G.nodes())}
-
-# Replace the subgraph_representation function call inside the loop
-#subgraph_representation_value = subgraph_representation((V, E), X, Y, idx_map=inv_idx_map)
-
-subgraph_representations = []
-
-# Add this line before the loop for extracting subgraphs
-inv_idx_map = {idx: i for i, idx in enumerate(G.nodes())}
-
-for subgraph in subgraphs:
-    sg_nodes = list(subgraph.nodes())
-    V = np.array([G.nodes[n]['feature'] for n in sg_nodes])
-    E = list(subgraph.edges())
-    #X = np.array([subgraph.nodes[i]['feature'] for i in range(len(sg_nodes))])
-    X = np.array([subgraph.nodes[i]['feature'] for i in sg_nodes])
-
-    Y = np.array([edge_features.get((sg_nodes.index(i), sg_nodes.index(j)), np.zeros(2 * data.num_features)) for i, j in E])
-    
-    # Call sub
+for c in range(n_clusters):
+    nodes = [i for i, x in enumerate(clusters) if x == c]
+    subgraph = G.subgraph(nodes)
+    sg_nodes = [n for n in subgraph.nodes() if n in inv_idx_map]
+    if len(sg_nodes) > 0:
+        V = np.array([G.nodes[n]['feature'] for n in sg_nodes])
+        E = list(subgraph.edges())
+        X = np.array([G.nodes[n]['feature'] for n in sg_nodes])
+        Y = np.array([edge_features.get((sg_nodes.index(i), sg_nodes.index(j)), np.zeros(2 * data.num_features)) for i, j in E])
+        if not np.isin(list(V), X[:, 0]).all():
+            print("Node set V is not present in X")
+            continue
+        elif len(V) == 0:
+            continue
+        else:
+            subgraph_representation_value = subgraph_representation((V, E), X, Y, idx_map=inv_idx_map)
+            subgraph_representations.append(subgraph_representation_value)
