@@ -3,3 +3,6 @@ oneclass_updated_original_kmeans ==  with originak kmeans for comparison
 combined.py  == to add the code for subgraph attention (intermediate, can be ignored)co
 combined_copy.py == working code with subgraph attention but anomaly detectionpart should be added
 copy_oneclassupdated.py == auc-roc added with normal gcn
+copy_oneclassupdated.py == auc-roc added with linea layer and  gcn
+                 (error:probabilities found instead of embeddingd)
+*oneclass_updated.py  kmeans++ with one class == auc-roc added
