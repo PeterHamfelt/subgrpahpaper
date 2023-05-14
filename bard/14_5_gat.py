@@ -147,10 +147,12 @@ class GAT(torch.nn.Module):
 if __name__ == '__main__':
     main()
 """
+
 import torch
 import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid
 from torch_geometric.nn import GATConv
+from sklearn.metrics import roc_auc_score
 
 def main():
     # Load dataset
@@ -170,6 +172,35 @@ def main():
 
     # Train model
     train_gnn(gnn, graph, labels, optimizer)
+
+
+class GAT(torch.nn.Module):
+    def __init__(self, num_features, hidden_size, num_classes, num_heads=8):
+        super(GAT, self).__init__()
+
+        self.conv1 = GATConv(num_features, hidden_size, heads=num_heads, dropout=0.6)
+        self.linear = torch.nn.Linear(hidden_size * num_heads, hidden_size)  # New linear layer
+        self.conv2 = GATConv(hidden_size, num_classes, dropout=0.6)
+
+    def forward(self, x, edge_index):
+        x = F.elu(self.conv1(x, edge_index))
+        x = F.dropout(x, training=self.training)
+        x = self.linear(x)  # Apply the linear layer
+        x = F.elu(x)
+        x = F.dropout(x, training=self.training)
+        x = self.conv2(x, edge_index)
+        return F.log_softmax(x, dim=-1)
+
+
+def impute_anomalies(graph):
+    # Select nodes for anomalies (e.g., nodes 2, 5, and 10)
+    anomaly_indices = [2, 5, 10]
+
+    # Modify node features for anomalies
+    for idx in anomaly_indices:
+        graph.x[idx] = torch.randn(graph.x.size(1))
+
+
 
 def train_gnn(gnn, graph, labels, optimizer, num_epochs=200):
     gnn.train()
@@ -197,34 +228,14 @@ def train_gnn(gnn, graph, labels, optimizer, num_epochs=200):
         x = gnn(graph.x, graph.edge_index)
         test_loss = F.nll_loss(x[graph.test_mask], labels[graph.test_mask])
         test_acc = (x.argmax(dim=-1)[graph.test_mask] == labels[graph.test_mask]).sum() / graph.test_mask.sum()
-    print(f"Test Loss {test_loss:.4f}, Test Accuracy {test_acc:.4f}")
 
+        # Calculate AUC
+        y_true = labels[graph.test_mask].detach().cpu().numpy()
+        y_scores = torch.softmax(x[graph.test_mask], dim=-1).detach().cpu().numpy()
+        auc = roc_auc_score(y_true, y_scores, multi_class='ovr')
 
-class GAT(torch.nn.Module):
-    def __init__(self, num_features, hidden_size, num_classes, num_heads=8):
-        super(GAT, self).__init__()
+    print(f"Test Loss {test_loss:.4f}, Test Accuracy {test_acc:.4f}, Test AUC {auc:.4f}")
 
-        self.conv1 = GATConv(num_features, hidden_size, heads=num_heads, dropout=0.6)
-        self.linear = torch.nn.Linear(hidden_size * num_heads, hidden_size)  # New linear layer
-        self.conv2 = GATConv(hidden_size, num_classes, dropout=0.6)
-
-    def forward(self, x, edge_index):
-        x = F.elu(self.conv1(x, edge_index))
-        x = F.dropout(x, training=self.training)
-        x = self.linear(x)  # Apply the linear layer
-        x = F.elu(x)
-        x = F.dropout(x, training=self.training)
-        x = self.conv2(x, edge_index)
-        return F.log_softmax(x, dim=-1)
-
-
-def impute_anomalies(graph):
-    # Select nodes for anomalies (e.g., nodes 2, 5, and 10)
-    anomaly_indices = [2, 5, 10]
-
-    # Modify node features for anomalies
-    for idx in anomaly_indices:
-        graph.x[idx] = torch.randn(graph.x.size(1))  # Replace features with random values
 
 if __name__ == '__main__':
     main()
