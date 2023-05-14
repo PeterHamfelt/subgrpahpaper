@@ -241,7 +241,8 @@ if __name__ == '__main__':
     main()
 
 """
-
+#-------------------------------------------------------
+#imputed anomalies wiyhout linear layer
 import torch
 import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid
